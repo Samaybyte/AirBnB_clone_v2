@@ -27,7 +27,7 @@ class DBStorage:
                                       pool_pre_ping=True)
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(bind=self.__engine)
-
+ 
     def all(self, cls=None):
         """Returns dictionary with all objects depending
         of the class name (argument cls)"""

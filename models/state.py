@@ -1,32 +1,26 @@
 #!/usr/bin/python3
-"""This is the state class"""
-from os import getenv
+""" State Module for HBNB project """
 import models
 from models.base_model import BaseModel, Base
+from sqlalchemy import String, DateTime, Column, ForeignKey
 from models.city import City
-from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from os import getenv
 
 
 class State(BaseModel, Base):
-    """ State class """
-
+    """ State class
+        Attribute:
+               -name: customer name
+    """
     __tablename__ = "states"
-
-    if getenv('HBNB_TYPE_STORAGE') == "db":
-        name = Column(String(128), nullable=False)
-        cities = relationship("City", cascade="all, delete", backref="state")
-
+    name = Column(String(128), nullable=False)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        cities = relationship('City', backref='state',
+                              cascade='all, delete-orphan')
     else:
-        name = ""
-
         @property
         def cities(self):
-            """ Returns the list of City instances with
-            state_id equals to the current State.id """
-            cities = models.storage.all(City)
-            lst = []
-            for city in cities.values():
-                if city.state_id == self.id:
-                    lst.append(city)
-            return lst
+            """Gettext method in cae of file storage"""
+            return [city for city in models.storage.all(City).values()
+                    if city.state_id == self.id]

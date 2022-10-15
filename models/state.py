@@ -14,11 +14,13 @@ class State(BaseModel, Base):
                -name: customer name
     """
     __tablename__ = "states"
-    name = Column(String(128), nullable=False)
     if getenv('HBNB_TYPE_STORAGE') == 'db':
+        name = Column(String(128), nullable=False)
         cities = relationship('City', backref='state',
                               cascade='all, delete-orphan')
     else:
+        name = ""
+
         @property
         def cities(self):
             """Gettext method in cae of file storage"""
